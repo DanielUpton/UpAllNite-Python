@@ -1,4 +1,4 @@
-                         # palindrome() v1 / verbose, step by step string manipulation
+                         # palindrome() v1 / succinct
 def palindrome(str0):           
     '''
         Function detects palindromes, words or phrases spelled identically reversed, even with any amount of blank spaces.
