@@ -7,7 +7,7 @@ def palindrome(str0):
             Underlying Forward string: neveroddnoreven
             Underlying Reverse string: neveronddoreven
             Not a Palindrome
-        Python Version 2.6:  Uses f'string syntax in print commands
+        Python Version 3.6:  Uses f'string syntax in print commands
     '''
     str3 = ''.join(str0.split()).lower()   # Combined v1's str1 - 3 lines into one line.
     str4 = str3[::-1]
