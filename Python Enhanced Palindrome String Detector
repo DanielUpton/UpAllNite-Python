@@ -12,14 +12,11 @@ def palindrome(str0):
     
         Python Version 2.6:  Uses f'string syntax in print commands
     '''
-    str1 = str0.split()
-    str2 = ''.join(str1)
-    str3 = str2.lower()
+    str3 = ''.join(str0.split()).lower()   # Combined v1's str1 - 3 lines into one line.
     str4 = str3[::-1]
 
     print(f'Underlying Forward string: {str3}')
-    print(f'Underlying Reverse string: {str4}')
-    print()
+    print(f'Underlying Reverse string: {str4}','\n'*2)
     if str3==str4:
         print('Palindrome')
     else:
