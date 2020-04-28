@@ -1,0 +1,28 @@
+                         # palindrome() v1 / verbose, step by step string manipulation
+def palindrome(str0):           
+    '''
+        Function detects palindromes, words or phrases spelled identically reversed, even with any amount of blank spaces.
+
+        Input: palindrome('any string').  Example: palindrome('Never Odd Nor Even')
+    
+        Output example: 
+            Underlying Forward string: neveroddnoreven
+            Underlying Reverse string: neveronddoreven
+            Not a Palindrome
+    
+        Python Version 2.6:  Uses f'string syntax in print commands
+    '''
+    str1 = str0.split()
+    str2 = ''.join(str1)
+    str3 = str2.lower()
+    str4 = str3[::-1]
+
+    print(f'Underlying Forward string: {str3}')
+    print(f'Underlying Reverse string: {str4}')
+    print()
+    if str3==str4:
+        print('Palindrome')
+    else:
+        print('Not a Palindrome')
+
+palindrome('Never Odd Nor Even')
