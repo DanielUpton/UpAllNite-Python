@@ -1,15 +1,12 @@
                          # palindrome() v1 / succinct
 def palindrome(str0):           
-    '''
+    ''' DocString
         Function detects palindromes, words or phrases spelled identically reversed, even with any amount of blank spaces.
-
         Input: palindrome('any string').  Example: palindrome('Never Odd Nor Even')
-    
         Output example: 
             Underlying Forward string: neveroddnoreven
             Underlying Reverse string: neveronddoreven
             Not a Palindrome
-    
         Python Version 2.6:  Uses f'string syntax in print commands
     '''
     str3 = ''.join(str0.split()).lower()   # Combined v1's str1 - 3 lines into one line.
