@@ -1,0 +1,31 @@
+# Create a class named Line with methods to accept [x,y] coordinates as a pair of tuples, 
+ # and return the slope, distance, and y-intercept of the line.
+
+class Line:
+    def __init__(self,coor1 = [1,1],coor2 = [2,1]):   #Attributes have default coordinates.
+        self.coor1 = coor1
+        self.coor2 = coor2
+
+        self.x1 = coor1[0]           # Underlying Methods defined at class level
+        self.y1 = coor1[1]
+        self.x2 = coor2[0]
+        self.y2 = coor2[1]           # ...to here
+
+        self.dx = self.x2-self.x1    # More class methods, derived from above underlying methods
+        self.dy = self.y2-self.y1    # ...to here
+
+    def getDist(self):                         # 1 First method defined at instance level
+        return (self.dx**2 + self.dy**2)**0.5
+  
+    def getSlope(self):                        # 2 
+        return             (self.y2-self.y1) / (self.x2-self.x1)
+
+    def getYint(self):                         # 3 Method: If slope were defined at class, could avoid embedding slope calc here
+        return self.y1 - ( (self.y2-self.y1) / (self.x2-self.x1) * self.x1  )
+    ###
+    # Now, run it..
+
+li = Line([3,4],[8,10])  # Instantiate the class into an instance and call it w/ parameters
+#li.getDist()            # remove any ONE of the #'s at these 3 line-starts to call the Li instance and run this specific fn.           
+#li.getSlope()           # same 
+li.getYint()            # same
