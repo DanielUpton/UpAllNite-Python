@@ -1,0 +1,74 @@
+# How to use this script:
+ # Data Source: Salaries.csv
+ # To simply run and check answer...
+    # 1. Download this code and Salaries.csv to the same local folder.  Now, since the code can be run two ways:  Choose...
+    # 2. Using the '#' (Shift 3) characterToggle on ONLY ONE of the following lines (counting blank and non-blank lines from top)
+      #  '# # # LINE 32 # # #' (labelled this way in comments to right of code)
+      #  '# # # LINE 56 # # #' (labelled this way...)
+
+# Problem: From the Salaries.csv dataset, answer this question:
+  # How many Job Titles were represented by only one person in [pick any one Calendar Year]? 
+     # (ie. What is the count of Job Titles with only one occurence in 2013?)
+     # Granularity Hint:  One row = one employee in one year
+
+# For readers with a SQL background, the logic of the following SQL pseudo code WOULD solve the problem if we were querying an RDBMS table):
+     #  SELECT COUNT(*) FROM 
+     #   ( SELECT JobTitle, Count(Id) from dfsal GROUP by JobTitle HAVING Count(Id) = 1 WHERE Year = 2013 )
+
+# With that logic, our step-by-step plan is...
+ # Pseudo SQL: think of nested SQL subqueries here (innermost first)
+  # year2013             ~= (Select * ...WHERE Year = 2013)
+  # eeCountByJob2013     ~= (Select * ...GROUP BY JobTitle, COUNT records (ID's are unique) )
+  # oneEeJobsIn2013      ~= (Select * ...WHERE Count(*)=1)  # Alt is ...groupby...filter(Count(*)=1) for SQL 'HAVING' rule.
+  # countOneEeJobsIn2013 ~= (Select count(*) )
+
+# After above stepped methods, We will back them out, step-by-step, into a single, complex one-liner.
+# Here we go...
+
+  # year2013 ~= (Select * ...WHERE Year = 2013)
+year2013=dfsal[ dfsal['Year']==2013]
+#year2013
+
+  #eeCountByJob2013 ~= (Select * ...GROUP BY JobTitle, COUNT records (ID's are unique) )
+eeCountByJob2013 = year2013.groupby('JobTitle').count()
+#eeCountByJob2013
+
+  # oneEeJobsIn2013 ~= (Select * ...WHERE Count(*)=1)  # Alt is ...groupby...filter(Count(*)=1) for SQL 'HAVING' rule.
+oneEeJobsIn2013 = eeCountByJob2013[ eeCountByJob2013['Id']==1 ]
+#oneEeJobsIn2013
+
+  # countOneEeJobsIn2013 ~= (Select count(*) )
+countOneEeJobsIn2013_InSteps = oneEeJobsIn2013.count()['Id']   # # # Solved # # # 
+countOneEeJobsIn2013_InSteps                                  # # # 'LINE 32' # # #
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+# Now, we'll back-it in, step-by-stap, into a single one-line method.  
+#countOneEeJobsIn2013_InSteps
+
+  # countOneEeJobsIn2013_InSteps = oneEeJobsIn2013.count()['Id']   
+#oneEeJobsIn2013.count()['Id']
+
+  # oneEeJobsIn2013 = eeCountByJob2013[ eeCountByJob2013['Id']==1 ]
+#eeCountByJob2013[ eeCountByJob2013['Id']==1 ].count()['Id']
+
+  # eeCountByJob2013 = year2013.groupby('JobTitle').count()
+#[     ].from dataframe                        [where dataframe                     ]
+#year2013.groupby('JobTitle').count()[ year2013.groupby('JobTitle').count()['Id']==1 ].count()['Id']
+
+  # year2013=dfsal[ dfsal['Year']==2013]: Copying it in here twice (see above code)
+#dfsal[ dfsal['Year']==2013].groupby('JobTitle').count()[ dfsal[ dfsal['Year']==2013].groupby('JobTitle').count()['Id']==1 ].count()['Id']
+
+  # Verbose: Used for unit test just below.
+countOneEeJobsIn2013_OneLine = dfsal[ dfsal['Year']==2013].groupby('JobTitle').count()[ dfsal[ dfsal['Year']==2013].groupby('JobTitle').count()['Id']==1 ].count()['Id']
+                                 # # # Solved also in one-liner in above code-line # # #
+#countOneEeJobsIn2013_OneLine    # # # 'LINE 56' # # #
+
+  # Unit Test:  Does ..._InSteps exactly match ..._Oneline (Pass =  True)
+#countOneEeJobsIn2013_InSteps == countOneEeJobsIn2013_OneLine   # True indicates that results are the same.
+
+# Impression:  The Pandas DataFrame equivalent of a complex SQL query is a bit of a challenge, especially
+ # when one is new to it, and unfamiliar with Pandas' various built-in shortcut methods.
+ # Of course, the downside to unfamiliarity with shortcut methods is longer, less readable code.
+
+# Our journey continues...
