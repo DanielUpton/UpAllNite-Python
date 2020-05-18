@@ -1,0 +1,132 @@
+# github filename: PySpark DataFrame Syntax and PySpark SQL for Derived Fields, Group By, Aggregate, Sort
+
+# SUMMARY: A Demonstration of PySpark Fundamentals Learning and Takeaways: 
+
+ # Demonstrate PySpark DataFrames syntax for performing an operation that is pretty simple in ANSI SQL. 
+   # This code was written by me using a publicly-available dataset with historical Walmart stock prices.
+   # I wrote it to satisfy a project within Jose Portilla's Udemy online 'PySpark' training course) using the databricks community cloud on a v6.5 cluster running 
+   # Apache Spark 2.4.5 from the db workspace running Jupyter Notebooks.  
+    # -------------------------------------- 
+# Introductory Context:  As a PySpark noob, my goal, as an alternative to cranking out online learning   
+  # certifications, is simply to memorialize my personal exploratory path, as I have done in Python, NumPy, and Pandas,
+  # not to tout myself as an expert.  Being highly skilled in BI-DW, and while I honestly do feel some confidence 
+  # now in Python, Spark is a great technology in which I hope to find time to do much more, as I've only dipped 
+  # my toe in so far.
+
+   # --------------------------------------------------------------------------------------------
+
+ #### Here is our exercise...
+ #### From a stock price dataset showing the DAILY open, high, low, close, and trading volume of Walmart stock,
+  ###  what was the average closing price for each month, ordered descending from the most recent month? 
+
+   # -------------------------------------------
+
+##### Steps:  
+ ##### 1: Derive Year (as a column, for clarity)
+ ##### 2: Derive Month (same)
+ ##### 3: Group By Year, then Month
+ ##### 4: Aggregate Close as (monthly) Average (Mean)
+ ##### 5: Output: Year, Month, Average Close
+   # ---------------------------------------
+#### Equivalent SQL query from single-table in RDBMS:
+ #####  SELECT Year(Date) AS Year, Month(Date) AS Month, AVG(Close)
+ #####  FROM WalmartStockTbl 
+ #####  GROUP BY YEAR(Date), MONTH(Date) 
+ #####  ORDER BY Year(Date) DESC, Month(Date) DESC 
+
+# ------------
+# Code block
+
+    # We first import PySpark API and initiate a SparkSession
+from pyspark.sql import SparkSession  #Works
+spark = SparkSession.builder.appName("SDF_Exer").getOrCreate()  #Done
+
+    # Read the Walmart Stock CSV file
+df = spark.read.csv('/FileStore/tables//U_SDFB/walmart_stock.csv',inferSchema=True,header=True)
+
+    # Quick look at columns
+#df.columns          # Selectively un-comment this line as desired
+
+    # Better yet, look at columns, datatypes, nulls
+#df.printSchema()    # Selectively un-comment this line as desired
+
+    # Show first five rows from all columns
+#df.show(5)           # Selectively un-comment this line as desired
+
+    # Describe a data-distribution summary of the dataset:  For all fields: Count(non-null), Mean, StdDev,Min, Max
+#df.describe().show()
+# ------------
+# Code block
+
+  # Now, on to our task...
+    # Step 1 & 2: Derive Year and Month from Date.  Remember, our beginning DataFrame name is 'df'
+          #            vv                       
+df_withYear =          df.withColumn('Year',year(df['Date']))    # Use .withColumn() to derive year in new df
+df_wYrMo =    df_withYear.withColumn('Month',month(df['Date']))  # Use (same) to derive month(num) in new df
+
+#df_wYrMo.show(1)     # Selectively un-comment as desired. Shows one record from our intermediate output to check results
+# ------------
+# Code block
+
+    # Begin work on Steps 3 & 4:  
+       #Group by Year, Month, and aggregate all other columns (for now) as Monthly Averages.  Show one row.
+#df_AvgsBy_YrMon = df_wYrMo.groupBy('Year','Month').mean().show(1)
+# ------------
+# Code block
+
+      # Return only requested fields in ascending monthly order
+#df_AvgCloseBy_YrMon = df_wYrMo.groupBy('Year','Month').agg({'Close':'mean'}).orderBy('Year','Month').show() 
+# ------------
+# Code block
+
+#Interestingly, descending order requires more code-structure than ascending.  Here it is...
+df_AvClosByYrMo = df_wYrMo.groupBy('Year','Month').agg({'Close':'mean'}).orderBy( df_wYrMo['Year'].desc(),   df_wYrMo['Month'].desc() ) 
+
+df_AvClosByYrMo.show()     # Our final result 
+#display(df_AvClosByYrMo)  # If your Python IDE support this display() command, it has a cleaner output format.
+# ------------
+# Code block
+
+  # Now, let's do the same using ANSI SQL in Spark
+    # First, re-import the date into a new DataFrame in our Spark session
+df_2 = spark.read.csv('/FileStore/tables//U_SDFB/walmart_stock.csv',inferSchema=True,header=True)
+
+# With this new dataframe, we will now create a Hive-like SQL view (neither materialized nor cached outside this   
+     # session) in order to then write an ANSI-SQL query.
+df_2.createOrReplaceTempView("WalmartStockTbl_2")
+# ------------
+# Code block
+
+    #  With that preparation done, here is our SQL Query that returns the same exact result.  Disregard that it flows onto a second line.   
+spark.sql('select Year(Date) as Year, Month(Date) as Month, avg(Close) from walmartstocktbl_2 group by year(Date), month(Date) order by Year(Date) desc, Month(Date) desc').show()
+# ------------
+# Code block
+
+# What have I demonstrated and learned and what impressions have been made?
+ # 1. Compared to Python Pandas DataFrames, PySpark DataFrames code looks more quirky to me.  One example is descending order.
+ # 2. As with Pandas, breaking down the work into chunks, using successive DataFrames, makes PySpark coding 
+    # very achievable by mortals with time to spend learning it.   
+    # mortals.  On a truly Spark-scale dataset (very large, perhaps with complex processing), one-liner code is likely to be faster, and we 
+    # until we (I) get comfortable writing complex one-liner PySpark code, we can easily reverse-engineer the above PySpark steps into a one-
+    # liner in the same fashion as I demonstrated in my recent Pandas post.
+ # 3. SQL in Spark:  With my (and many others') higher expertise in SQL than PySpark DataFrames syntax, it is an  
+    # enormous advantage to be able to embed complex SQL here.  Having said that, I do not assume that SQL will
+    # accomplish anything close to all of the logic that we will likely want to run through Spark.  Therefore, gaining
+    # comfort with PySpark syntax (or Scala, Java) is most likely foundational to becoming productive with Spark.
+
+# Our journey through modern data and analytics continues, soon taking us next into Amazon Web Services.  
+# Reader comments are, of course, optional, but always welcome. Either way, thank you for reading this post!  
+
+# ------------
+
+# End of document
+
+
+
+
+
+
+
+
+
+
