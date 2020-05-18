@@ -1,6 +1,6 @@
-# github filename: PySpark DataFrame Syntax and PySpark SQL for Derived Fields, Group By, Aggregate, Sort
+# github filename: PySpark DataFrame Syntax and Spark SQL for Derived Fields, Group By, Aggregate, Sort
 
-# SUMMARY: A Demonstration of PySpark Fundamentals Learning and Takeaways: 
+# SUMMARY: A Demonstration of PySpark Fundamental Learning and Takeaways: 
 
  # Demonstrate PySpark DataFrames syntax for performing an operation that is pretty simple in ANSI SQL. 
    # This code was written by me using a publicly-available dataset with historical Walmart stock prices.
