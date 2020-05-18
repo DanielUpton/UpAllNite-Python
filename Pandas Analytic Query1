@@ -2,7 +2,7 @@
  # Data Source: Salaries.csv
  # To simply run and check answer...
     # 1. Download this code and Salaries.csv to the same local folder.  Now, since the code can be run two ways:  Choose...
-    # 2. Using the '#' (Shift 3) characterToggle on ONLY ONE of the following lines (counting blank and non-blank lines from top)
+    # 2. Using the '#' (Shift 3) character, toggle (remove the ' # ' on) ONLY ONE of the following lines (counting blank and non-blank lines from top)
       #  '# # # LINE 32 # # #' (labelled this way in comments to right of code)
       #  '# # # LINE 56 # # #' (labelled this way...)
 
